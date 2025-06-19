@@ -5,19 +5,12 @@ class Solution {
         Map<String, List<String>> map = new HashMap<>();
 
         for(String word: strs){
-            int[] keyArray = getCharacterCount(word);
-            String key = Arrays.toString(keyArray);
+            char[] chars = word.toCharArray();
+            Arrays.sort(chars);
+            String key = new String(chars);
             map.computeIfAbsent(key, k -> new ArrayList<>()).add(word);
         }
 
         return new ArrayList<>(map.values());
-    }
-
-    public int[] getCharacterCount(String str){
-        int[] count = new int[26];
-        for(char c : str.toCharArray()){
-            count[c - 'a']++;
-        }
-        return count;
     }
 }
