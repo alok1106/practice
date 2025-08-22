@@ -8,10 +8,8 @@ class Solution {
 
 
         for(int i = 0; i < row; i++){
-            boolean oneFound = false;
             for(int j = 0; j < col; j++){
                 if(grid[i][j] == 1){
-                    oneFound = true;
                     maxRow = Math.max(maxRow, i);
                     minRow = Math.min(minRow, i);
                     maxCol = Math.max(maxCol, j);
