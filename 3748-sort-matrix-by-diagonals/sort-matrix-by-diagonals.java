@@ -1,35 +1,39 @@
+import java.util.*;
+
 class Solution {
-    public int[][] sortMatrix(int[][] grid) {
-        int n = grid.length;
-        Map<Integer, List<Integer>> diag = new HashMap<>();
+    public int[][] sortMatrix(int[][] mat) {
+        int rows = mat.length, cols = mat[0].length;
 
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                diag.computeIfAbsent(i - j, k -> new ArrayList<>()).add(grid[i][j]);
-            }
+        for (int row = 0; row < rows; row++) {
+            sortDiagonal(mat, row, 0, false);
         }
 
-        for (var e : diag.entrySet()) {
-            List<Integer> list = e.getValue();
-            int key = e.getKey();
-            if (key >= 0) {
-                list.sort(Comparator.reverseOrder()); // bottom-left (including main) -> descending
-            } else {
-                list.sort(Comparator.naturalOrder()); // top-right -> ascending
-            }
+        for (int col = 1; col < cols; col++) {
+            sortDiagonal(mat, 0, col, true);
         }
 
-        Map<Integer, Integer> idx = new HashMap<>();
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                int key = i - j;
-                List<Integer> list = diag.get(key);
-                int k = idx.getOrDefault(key, 0);
-                grid[i][j] = list.get(k);
-                idx.put(key, k + 1);
-            }
+        return mat;
+    }
+
+    private void sortDiagonal(int[][] mat, int row, int col, boolean increasing) {
+        int rows = mat.length, cols = mat[0].length;
+        List<Integer> diagonal = new ArrayList<>();
+
+        int r = row, c = col;
+        while (r < rows && c < cols) {
+            diagonal.add(mat[r][c]);
+            r++;
+            c++;
         }
 
-        return grid;
+        diagonal.sort(increasing ? Comparator.naturalOrder() : Comparator.reverseOrder());
+
+        r = row; c = col;
+        int idx = 0;
+        while (r < rows && c < cols) {
+            mat[r][c] = diagonal.get(idx++);
+            r++;
+            c++;
+        }
     }
 }
