@@ -1,7 +1,7 @@
 class FoodRatings {
     private static class Food {
-        final String food;
-        final int rating;
+        private final String food;
+        private final int rating;
         Food(String food, int rating) { this.food = food; this.rating = rating; }
     }
 
