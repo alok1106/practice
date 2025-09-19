@@ -5,7 +5,6 @@ class Spreadsheet {
     public Spreadsheet(int rows) {}
     
     public void setCell(String cell, int value) {
-        if(value == 0) cells.remove(cell);
         cells.put(cell, value);
     }
     
@@ -19,10 +18,8 @@ class Spreadsheet {
         int sum = 0;
         for (String part : parts) {
             if (Character.isLetter(part.charAt(0))) {
-                // It's a cell reference like A1, B20
                 sum += cells.getOrDefault(part, 0);
             } else {
-                // It's a number
                 sum += Integer.parseInt(part);
             }
         }
