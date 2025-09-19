@@ -5,6 +5,7 @@ class Spreadsheet {
     public Spreadsheet(int rows) {}
     
     public void setCell(String cell, int value) {
+        if(value == 0) cells.remove(cell);
         cells.put(cell, value);
     }
     
