@@ -1,12 +1,8 @@
 class Spreadsheet {
 
-    private Map<String, Integer> cells;
-    private int rows;
+    private Map<String, Integer> cells = new HashMap<>();
 
-    public Spreadsheet(int rows) {
-        this.rows = rows;
-        cells = new HashMap<>();
-    }
+    public Spreadsheet(int rows) {}
     
     public void setCell(String cell, int value) {
         if(value == 0) cells.remove(cell);
