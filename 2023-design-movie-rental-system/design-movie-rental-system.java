@@ -1,71 +1,73 @@
 class MovieRentingSystem {
 
-    private record Key(int shop, int movie) {}
+    private Map<String, Integer> priceMap;
 
-    private record MovieEntry(int price, int shop, int movie) {}
+    private Map<Integer, TreeSet<int[]>> available;
 
-    private final Map<Key, Integer> priceMap;
-    private final Map<Integer, TreeSet<MovieEntry>> available;
-    private final TreeSet<MovieEntry> rented;
+    private TreeSet<int[]> rented;
 
     public MovieRentingSystem(int n, int[][] entries) {
         priceMap = new HashMap<>();
         available = new HashMap<>();
 
-        Comparator<MovieEntry> cmpAvail = Comparator
-                .comparingInt(MovieEntry::price)
-                .thenComparingInt(MovieEntry::shop);
+        Comparator<int[]> cmpAvail = (a, b) -> {
+            if (a[0] != b[0]) return a[0] - b[0];
+            return a[1] - b[1];
+        };
 
-        Comparator<MovieEntry> cmpRented = Comparator
-                .comparingInt(MovieEntry::price)
-                .thenComparingInt(MovieEntry::shop)
-                .thenComparingInt(MovieEntry::movie);
+        Comparator<int[]> cmpRented = (a, b) -> {
+            if (a[0] != b[0]) return a[0] - b[0];
+            if (a[1] != b[1]) return a[1] - b[1];
+            return a[2] - b[2];
+        };
 
         rented = new TreeSet<>(cmpRented);
 
-        // Initialize available movies
         for (int[] e : entries) {
             int shop = e[0], movie = e[1], price = e[2];
-            priceMap.put(new Key(shop, movie), price);
+            String key = shop + "#" + movie;
+            priceMap.put(key, price);
 
             available.putIfAbsent(movie, new TreeSet<>(cmpAvail));
-            available.get(movie).add(new MovieEntry(price, shop, movie));
+            available.get(movie).add(new int[]{price, shop, movie});
         }
     }
 
     public List<Integer> search(int movie) {
-    TreeSet<MovieEntry> emptySet = new TreeSet<>(
-        Comparator.comparingInt(MovieEntry::price)
-                  .thenComparingInt(MovieEntry::shop)
-    );
+        List<Integer> res = new ArrayList<>();
+        if (!available.containsKey(movie)) return res;
 
-    return available.getOrDefault(movie, emptySet)
-            .stream()
-            .limit(5)
-            .map(MovieEntry::shop)
-            .toList();
+        int count = 0;
+        for (int[] x : available.get(movie)) {
+            res.add(x[1]); // shopId
+            if (++count == 5) break;
+        }
+        return res;
     }
 
     public void rent(int shop, int movie) {
-        int price = priceMap.get(new Key(shop, movie));
-        MovieEntry entry = new MovieEntry(price, shop, movie);
+        String key = shop + "#" + movie;
+        int price = priceMap.get(key);
 
-        available.get(movie).remove(entry);
-        rented.add(entry);
+        available.get(movie).remove(new int[]{price, shop, movie});
+        rented.add(new int[]{price, shop, movie});
     }
 
     public void drop(int shop, int movie) {
-        int price = priceMap.get(new Key(shop, movie));
-        MovieEntry entry = new MovieEntry(price, shop, movie);
+        String key = shop + "#" + movie;
+        int price = priceMap.get(key);
 
-        rented.remove(entry);
-        available.get(movie).add(entry);
+        rented.remove(new int[]{price, shop, movie});
+        available.get(movie).add(new int[]{price, shop, movie});
     }
 
     public List<List<Integer>> report() {
-        return rented.stream()
-                .limit(5)
-                .map(entry -> Arrays.asList(entry.shop(), entry.movie()))
-                .toList();
+        List<List<Integer>> res = new ArrayList<>();
+        int count = 0;
+        for (int[] x : rented) {
+            res.add(Arrays.asList(x[1], x[2]));
+            if (++count == 5) break;
+        }
+        return res;
     }
 }
