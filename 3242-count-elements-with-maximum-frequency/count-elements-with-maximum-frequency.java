@@ -2,16 +2,19 @@ class Solution {
     public int maxFrequencyElements(int[] nums) {
         Map<Integer, Integer> frequencyMap = new HashMap<>();
         int maxFreq = 0;
+        int countMaxFreqElements = 0;
+
         for (int num : nums) {
             int freq = frequencyMap.getOrDefault(num, 0) + 1;
             frequencyMap.put(num, freq);
-            maxFreq = Math.max(maxFreq, freq);
-        }
 
-        int maxFreqElements = 0;
-        for (int freq : frequencyMap.values()) {
-            if (freq == maxFreq) maxFreqElements += freq;
+            if (freq > maxFreq) {
+                maxFreq = freq;
+                countMaxFreqElements = freq;
+            } else if (freq == maxFreq) {
+                countMaxFreqElements += freq;
+            }
         }
-        return maxFreqElements;
+        return countMaxFreqElements;
     }
 }
