@@ -4,24 +4,25 @@ class Solution {
     public int[] avoidFlood(int[] rains) {
         int n = rains.length;
         int[] ans = new int[n];
-        Map<Integer, Integer> fullDays = new HashMap<>();
+        Map<Integer, Integer> lastRainDay = new HashMap<>();
         TreeSet<Integer> dryDays = new TreeSet<>();
 
-        for(int i=0; i<n; i++){
-            if(rains[i] == 0){
-                dryDays.add(i);
-                ans[i] = 1;
+        for(int day=0; day<n; day++){
+            if(rains[day] == 0){
+                dryDays.add(day);
+                ans[day] = 1;
             } else {
-                ans[i] = -1;
-                if(fullDays.containsKey(rains[i])){                
-                    Integer dryDay = dryDays.higher(fullDays.get(rains[i])); 
+                ans[day] = -1;
+                if(lastRainDay.containsKey(rains[day])){  
+                    int prevRainDay = lastRainDay.get(rains[day]);
+                    Integer dryDay = dryDays.ceiling(prevRainDay); 
                     if(dryDay == null){
                         return new int[0];
                     }
-                    ans[dryDay] = rains[i];
+                    ans[dryDay] = rains[day];
                     dryDays.remove(dryDay);
                 }
-                fullDays.put(rains[i], i);
+                lastRainDay.put(rains[day], day);
             }
         }
         return ans;
