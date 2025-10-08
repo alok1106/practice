@@ -5,28 +5,22 @@ class Solution {
         int n = spells.length;
         int[] result = new int[n];
 
-        for(int i = 0; i < n; i++){
-            int spell = spells[i];
+        for (int i = 0; i < n; i++) {
+            long target = (success - 1L) / spells[i] + 1;
 
-            long required = (success + spell - 1)/ spell;
-
-            int index = lowerBound(potions, required);
-
-            result[i] = m - index;
-        }
-        return result;
-    }
-
-    int lowerBound(int[] potions, long required){
-        int low = 0, high = potions.length;
-        while (low < high){
-            int mid = low + (high - low)/2;
-            if(potions[mid] < required){
-                low = mid + 1;
-            } else {
-                high = mid;
+            int left = 0, right = m;
+            while (left < right) {
+                int mid = left + (right - left) / 2;
+                if (potions[mid] >= target) {
+                    right = mid;
+                } else {
+                    left = mid + 1;
+                }
             }
+
+            result[i] = m - left;
         }
-        return low;
+        
+        return result;
     }
 }
