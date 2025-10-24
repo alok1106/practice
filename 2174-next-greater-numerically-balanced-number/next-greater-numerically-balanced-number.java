@@ -1,26 +1,25 @@
 class Solution {
     public int nextBeautifulNumber(int n) {
+        int num = n + 1;
         while (true) {
-            n++;
-            if (isBeautiful(n)) return n;
+            if (isBeautiful(num)) return num;
+            num++;
         }
     }
 
-    boolean isBeautiful(int n) {
-        Map<Integer, Integer> freq = new HashMap<>();
-        int temp = n;
+    private boolean isBeautiful(int x) {
+        int[] freq = new int[10];
 
-        while (temp > 0) {
-            int digit = temp % 10;
-            freq.put(digit, freq.getOrDefault(digit, 0) + 1);
-            temp /= 10;
+        while (x > 0) {
+            freq[x % 10]++;
+            x /= 10;
         }
 
-        for (Map.Entry<Integer, Integer> entry : freq.entrySet()) {
-            if (!entry.getKey().equals(entry.getValue())) {
+        for (int d = 0; d <= 9; d++) {
+            if (freq[d] != 0 && freq[d] != d)
                 return false;
-            }
         }
+
         return true;
     }
 }
