@@ -1,21 +1,14 @@
-import java.util.Arrays;
-
 class Solution {
-    public int[] getSneakyNumbers(int[] nums) {
-        int N = nums.length;
-        int[] res = new int[2];
-        int idx = 0;
+  public int[] getSneakyNumbers(int[] nums) {
+    final int MAX = 100;
+    int[] ans = new int[2];
+    int[] count = new int[MAX + 1];
+    int ansIndex = 0;
 
-        for (int i = 0; i < N && idx < 2; i++) {
-            int val = nums[i] % N;        
-            if (nums[val] >= N) { 
-                res[idx++] = val;
-            } else {
-                nums[val] += N;
-            }
-        }
+    for (final int num : nums)
+      if (++count[num] == 2)
+        ans[ansIndex++] = num;
 
-        Arrays.sort(res);
-        return res;
-    }
+    return ans;
+  }
 }
